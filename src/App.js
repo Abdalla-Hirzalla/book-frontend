@@ -12,6 +12,7 @@ import LogIn from './Login'
 import BestBooks from './BestBooks'
 import Profile from './profile'
 import Logout from './Logout'
+import Books from './BestBooks';
 class App extends React.Component {
 
 
@@ -35,7 +36,8 @@ class App extends React.Component {
               {isAuthenticated ? 
                 <Profile/> : <LogIn />}
               </Route>
-
+             
+            
               
 
             </Switch>
