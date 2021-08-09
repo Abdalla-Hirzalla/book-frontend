@@ -11,8 +11,8 @@ import { withAuth0 } from '@auth0/auth0-react';
 import LogIn from './Login'
 import BestBooks from './BestBooks'
 import Profile from './profile'
-import Logout from './Logout'
-import Books from './BestBooks';
+
+
 class App extends React.Component {
 
 

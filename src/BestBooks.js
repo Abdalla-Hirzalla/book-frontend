@@ -1,76 +1,78 @@
-import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-// import Jumbotron from 'react-bootstrap/Jumbotron';
 import './BestBooks.css';
+import React, { Component } from 'react';
+import { Card } from 'react-bootstrap';
 import axios from 'axios';
+import { withAuth0 } from '@auth0/auth0-react';
 
+class BestBooks extends Component {
 
-// // class MyFavoriteBooks extends React.Component {
-// //   render() {
-// //     return(
-// //       <Jumbotron>
-// //         <h1>My Favorite Books</h1>
-// //         <p>
-// //           This is a collection of my favorite books
-// //         </p>
-// //       </Jumbotron>
-// //     )
-// //   }
-// // }
-
-// // export default MyFavoriteBooks;
-
-
-
-
-
-
-
-class MyFavoriteBooks extends React.Component {
-
-  //  TODO: get a list of cats from the backend
   constructor(props) {
     super(props);
     this.state = {
-      books: [],
-      showBooks: false,
-      server: process.env.REACT_APP_SERVER_URL
-    }
+
+      loading: false,
+      bookData: [],
+    };
   }
 
-  getBooks = async (event) => {
-    event.preventDefault();
-    try {
-      const paramsObj = {
-        name: event.target.ownerName.value
-      }
-      const books = await axios.get(`${this.state.server}/book`, { params: paramsObj });
+  componentDidMount() {
+    this.setState({
+      loading: true,
 
+    });
+    this.getData();
+  }
+  getData = async () => {
+    const { user } = this.props.auth0;
+    try {
+ 
+      const url = `${process.env.REACT_APP_SERVER_URL}/books?email=${user.email}`;
+      const bookRequest = await axios.get(url);
       this.setState({
-        books: books.data,
-        showBooks: true
+        bookData: bookRequest.data[0].books,
+        loading: false,
       });
-    } catch (error) {
-      console.log(error);
+
+    } catch (err) {
+      this.setState({
+        loading: false,
+      });
     }
+
   }
 
 
   render() {
     return (
       <>
-        <div>
-          <Form
-            updateName={this.updateName}
-            getBooks={this.getBooks}
-          />
-         
-        </div>
+        {this.state.loading ? (
+          <>
+            
+          </>
+        ) : (
+          <>
+            <h2>My Favorite book</h2>
+            {this.state.bookData.map((book, idx) =>
+
+              <>
+                <Card.Body key={idx}>
+                  <Card.Title>book title: {book.name}</Card.Title>
+                  <Card.Text>book description: {book.description}</Card.Text>
+                  <Card.Text>book status: {book.status}</Card.Text>
+                </Card.Body>
+              </>
+
+
+            )}
+          </>
+        )
+
+        }
+
+
       </>
-    )
+    );
   }
 }
-
-export default MyFavoriteBooks;
-
-
+export default withAuth0(BestBooks);
