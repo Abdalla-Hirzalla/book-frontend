@@ -67,6 +67,21 @@ class BestBooks extends Component {
             <p style={{coler :'orang'}}>{this.state.bookData[1].description}</p>
           </Carousel.Caption>
         </Carousel.Item>
+
+        <Carousel.Item>
+          <img
+            className="d-block w-100"
+            src={this.state.bookData[2].image}
+            alt="Second slide"
+          />
+
+          <Carousel.Caption>
+            <h3 style={{coler :'orang'}}>{this.state.bookData[2].title}</h3>
+            <p style={{coler :'orang'}}>{this.state.bookData[2].description}</p>
+          </Carousel.Caption>
+        </Carousel.Item>
+
+
       </Carousel>) : 'No favorite Books'
 
       }
