@@ -12,6 +12,7 @@ class RenderNewBook extends Component {
                     <Card.Title>{this.props.title}</Card.Title>
                     <Card.Text>{this.props.description}</Card.Text>
                     <Button onClick={() => { this.props.deleteBook(this.props.index) }} variant="danger">Delete Book!</Button>
+                    <Button onClick={()=>{this.props.updateFormData(this.props.index)}} variant="primary">Update Book!</Button>
 
                 </Card.Body>
                 <Card.Footer><Card.Text>{this.props.status}</Card.Text></Card.Footer>
