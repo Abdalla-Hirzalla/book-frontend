@@ -8,6 +8,7 @@ import { Container } from 'react-bootstrap';
 import { Button } from 'bootstrap';
 import RenderNewBook from './RenderNewBook';
 import AddBookModal from './AddBookModal';
+import UpdateBookModal from './UpdateBookModal';
 
 class BestBooks extends Component {
 
@@ -17,6 +18,12 @@ class BestBooks extends Component {
       bookData: [],
       errMsg: '',
       showForm: false,
+      showUpdateForm: false,
+      title: '' ,
+      description: '' ,
+      status: '' ,
+      index: -1 ,
+      user : {}
     };
   }
 
@@ -80,8 +87,24 @@ class BestBooks extends Component {
 
   }
 
+  updateFormData = (id) => {
+    this.setState({
+      showUpdateForm: true,
+      index:id ,
+      title: this.state.bookData[id].title ,
+      description: this.state.bookData[id].title,
+      status: this.state.bookData[id].status,
+      user: this.state.auth0.user
+    })
+  }
 
 
+  updateBook = (updatedBook) => {
+
+    this.setState({
+      bookData: updatedBook
+    })
+  }
 
 
 
@@ -92,11 +115,17 @@ class BestBooks extends Component {
       {
         <Container>
           {
-            this.state.bookData.map((item, index) => <RenderNewBook deleteBook={this.deleteBook} index={index} title={item.title} description={item.description} status={item.status}></RenderNewBook>)
+            this.state.bookData.map((item, index) => <RenderNewBook deleteBook={this.deleteBook} index={index} title={item.title} description={item.description} status={item.status} updateFormData={this.updateFormData}></RenderNewBook>)
 
           }
         </Container>
+
       }
+{
+  this.state.showUpdateForm &&  <UpdateBookModal index={this.state.index} title={this.state.title} description={this.state.description} status={this.state.status} showUpdateForm={this.state.showUpdateForm} user={this.state.user}  updateBook={this.updateBook} closeModal={this.closeModal}/>
+} 
+
+
     </>
 
     );
