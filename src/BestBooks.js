@@ -4,8 +4,10 @@ import React, { Component } from 'react';
 // import { Card } from 'react-bootstrap';
 import axios from 'axios';
 import { withAuth0 } from '@auth0/auth0-react';
-import Carousel from 'react-bootstrap/Carousel'
 import { Container } from 'react-bootstrap';
+import { Button } from 'bootstrap';
+import RenderNewBook from './RenderNewBook';
+import AddBookModal from './AddBookModal';
 
 class BestBooks extends Component {
 
@@ -14,6 +16,7 @@ class BestBooks extends Component {
     this.state = {
       bookData: [],
       errMsg: '',
+      showForm: false,
     };
   }
 
@@ -39,56 +42,61 @@ class BestBooks extends Component {
       });
   }
 
+  showBookForm = () => {
+    this.setState({
+      showForm: true
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      showForm: false
+
+    });
+  };
+
+
+  addNewBook = (book) => {
+    const newBookArr = this.state.bookData;
+    newBookArr.push(book);
+    this.setState({
+      bookData: newBookArr
+    });
+  }
+
+  deleteBook = (id) => {
+    const { user } = this.props.auth0
+    const data = {
+      email: user.email
+    };
+    axios
+      .delete(`${process.env.REACT_APP_SERVER_URL}/books/${id}`, { params: data })
+      .then(result => {
+        this.setState({
+          bookData: result.data
+        });
+      })
+      .catch(err => { console.log('error'); });
+
+  }
+
+
+
+
 
 
   render() {
     return (<>
-      {this.state.bookData.length ? (<Carousel>
-        <Carousel.Item>
-          <img
-            className="d-block w-100"
-            src={this.state.bookData[0].image}
-            alt="First slide"
-          />
-          <Carousel.Caption>
-            <h3 style={{coler :'orang'}}>{this.state.bookData[0].title}</h3>
-            <p style={{coler :'orang'}}>{this.state.bookData[0].description}</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-        <Carousel.Item>
-          <img
-            className="d-block w-100"
-            src={this.state.bookData[1].image}
-            alt="Second slide"
-          />
+      <Button onClick={this.showBookForm}>Add new Book</Button>
+      {this.state.showForm && <AddBookModal showForm={this.state.showForm} closeModal={this.closeModal} addNewBook={this.addNewBook} />}
+      {
+        <Container>
+          {
+            this.state.bookData.map((item, index) => <RenderNewBook deleteBook={this.deleteBook} index={index} title={item.title} description={item.description} status={item.status}></RenderNewBook>)
 
-          <Carousel.Caption>
-            <h3 style={{coler :'orang'}}>{this.state.bookData[1].title}</h3>
-            <p style={{coler :'orang'}}>{this.state.bookData[1].description}</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-
-        <Carousel.Item>
-          <img
-            className="d-block w-100"
-            src={this.state.bookData[2].image}
-            alt="Second slide"
-          />
-
-          <Carousel.Caption>
-            <h3 style={{coler :'orang'}}>{this.state.bookData[2].title}</h3>
-            <p style={{coler :'orang'}}>{this.state.bookData[2].description}</p>
-          </Carousel.Caption>
-        </Carousel.Item>
-
-
-      </Carousel>) : 'No favorite Books'
-
+          }
+        </Container>
       }
-
-
-
-
     </>
 
     );
